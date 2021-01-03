@@ -14,7 +14,7 @@ export type ContainerQueryProps = {
 };
 
 type ContainerQueryState = {
-    current: string;
+    currentBreakpoint: string;
     width: number;
 };
 
@@ -45,7 +45,7 @@ export function useContainerQueries<T extends HTMLElement>({
 }: ContainerQueryProps): ContainerQueryResult<T> {
     const initialBreakpoint = Object.keys(breakpoints)[0];
     const [state, setState] = useState<ContainerQueryState>({
-        current: initialBreakpoint,
+        currentBreakpoint: initialBreakpoint,
         width: 0,
     });
 
@@ -68,7 +68,7 @@ export function useContainerQueries<T extends HTMLElement>({
             }
 
             return {
-                current: currentActive || prevActive,
+                currentBreakpoint: currentActive || prevActive,
                 width,
             };
         },
@@ -91,18 +91,17 @@ export function useContainerQueries<T extends HTMLElement>({
                 width = Math.round(entry.contentRect.width);
             }
 
-            // Allow user to opt of updating the state on width changes, and only for breakpoint changes
             if (ignoreDimensions) {
-                const { current } = matchBreakpoint(state.current, width);
+                const { currentBreakpoint } = matchBreakpoint(state.currentBreakpoint, width);
 
-                if (current !== state.current) {
-                    setState((prev) => ({ ...prev, current }));
+                if (currentBreakpoint !== state.currentBreakpoint) {
+                    setState((prev) => ({ ...prev, currentBreakpoint }));
                 }
             } else {
-                setState(matchBreakpoint(state.current, width));
+                setState(matchBreakpoint(state.currentBreakpoint, width));
             }
         },
-        [state.current, ignoreDimensions, matchBreakpoint]
+        [state.currentBreakpoint, ignoreDimensions, matchBreakpoint]
     );
 
     useIsomorphicLayoutEffect(() => {
@@ -138,6 +137,6 @@ export function useContainerQueries<T extends HTMLElement>({
     return {
         assignRef,
         width: state.width,
-        current: state.current,
+        current: state.currentBreakpoint,
     } as const;
 }
