@@ -15,7 +15,7 @@ export type ContainerQueryProps = {
 
 export type ContainerQueryResult<T> = {
     /** Callback ref to be assigned to the containing DOM node the user wishes to observe for changes. */
-    assignRef: RefCallback<T>;
+    ref: RefCallback<T>;
     /** The current 'active' breakpoint. This key will match from one of the key/value pairs from the breakpoints supplied to the hook */
     current: string;
     /** Current width of the observed element */
@@ -137,7 +137,7 @@ export function useContainerQueries<T extends HTMLElement>({
     }, []);
 
     return {
-        assignRef,
+        ref: assignRef,
         width: state.width,
         current: state.currentBreakpoint,
     } as const;
