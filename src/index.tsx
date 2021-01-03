@@ -13,17 +13,17 @@ export type ContainerQueryProps = {
     ignoreDimensions?: boolean;
 };
 
-type ContainerQueryState = {
-    currentBreakpoint: string;
-    width: number;
-};
-
 export type ContainerQueryResult<T> = {
     /** Callback ref to be assigned to the containing DOM node the user wishes to observe for changes. */
     assignRef: RefCallback<T>;
     /** The current 'active' breakpoint. This key will match from one of the key/value pairs from the breakpoints supplied to the hook */
     current: string;
     /** Current width of the observed element */
+    width: number;
+};
+
+type ContainerQueryState = {
+    currentBreakpoint: string;
     width: number;
 };
 
@@ -49,11 +49,12 @@ export function useContainerQueries<T extends HTMLElement>({
         width: 0,
     });
 
+    // Store refs for the resize observer instance, and observed element we are tracking.
     const observerRef = useRef<ResizeObserver | null>(null);
     const elementRef = useRef<T | null>(null);
 
     const matchBreakpoint = useCallback(
-        (prevActive, width) => {
+        (prevActive: string, width: number) => {
             let currentActive;
             for (const [key, [min, max]] of Object.entries(breakpoints)) {
                 if (width >= min) {
@@ -80,8 +81,9 @@ export function useContainerQueries<T extends HTMLElement>({
      */
     const handleResize = useCallback(
         ([entry]: readonly ResizeObserverEntry[]) => {
-            let width;
+            let width: number;
             if (entry.borderBoxSize) {
+                // Checking for chrome as using a non-standard array (https://developer.mozilla.org/en-US/docs/Web/API/ResizeObserver)
                 width = Math.round(
                     Array.isArray(entry.borderBoxSize)
                         ? entry.borderBoxSize[0].inlineSize
