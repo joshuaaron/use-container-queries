@@ -4,8 +4,7 @@
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
   "files": [
-    "dist",
-    "src"
+    "dist"
   ],
   "engines": {
     "node": ">=10"
@@ -14,20 +13,35 @@
     "start": "tsdx watch",
     "build": "tsdx build",
     "test": "tsdx test --passWithNoTests",
+    "test:watch": "tsdx test --watch",
     "lint": "tsdx lint",
-    "prepare": "tsdx build"
-  },
-  "peerDependencies": {
-    "react": ">=16"
+    "prepare": "tsdx build",
+    "prepublishOnly": "npm run test && npm run lint",
+    "preversion": "npm run lint"
   },
   "husky": {
     "hooks": {
-      "pre-commit": "tsdx lint"
+      "pre-commit": "lint-staged && npm run test"
     }
+  },
+  "lint-staged": {
+    "*.{js,ts,tsx}": [
+      "npm run lint",
+      "prettier --write"
+    ]
   },
   "name": "use-container-queries",
   "author": "Josh Reynolds",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/joshuaaron/use-container-queries.git"
+  },
+  "homepage": "https://github.com/joshuaaron/use-container-queries",
   "module": "dist/use-container-queries.esm.js",
+  "peerDependencies": {
+    "react": ">=16.8.0",
+    "react-dom": ">=16.8.0"
+  },
   "devDependencies": {
     "@types/react": "17.0.0",
     "@types/react-dom": "17.0.0",
