@@ -30,9 +30,10 @@ type ContainerQueryState = {
 /**
  * useContainerQueries.
  *
- * A react hook utilizing the Resize Observer API that allows a user to track an elements changing width
- * with predefined breakpoint ranges, in order to react to the changes, such as responsive styling, where
- * the user can style DOM elements based on their container, rather than the browser viewport.
+ * A react hook utilizing the Resize Observer API that observes a containing elements width.
+ * It matches that width with the users predefined breakpoint ranges and determines the containers size.
+ * The main purpose of this is to allow web developers  to style DOM elements based on
+ * the size of a containing element rather than the size of the browser viewport.
  *
  * @param {QueryBreakpoints} breakpoints A key/value mapping of explicit breakpoint ranges to be
  * tested against the current observed elements width to find a match.
