@@ -1,11 +1,12 @@
 import React from 'react';
 import { render } from '@testing-library/react';
 import { renderHook } from '@testing-library/react-hooks';
+import { act } from 'react-test-renderer';
 import { ContainerQueryProps, QueryBreakpoints, useContainerQueries } from '..';
-import { getMockedInstance, observerMap } from './test-utils';
+import { getMockedInstance, observerMap, triggerObserverCallback } from './test-utils';
 import '@testing-library/jest-dom/extend-expect';
 
-const mockResizeObserver = (callback: any) => {
+const mockResizeObserver = (callback: ResizeObserverCallback) => {
     const observerItem = {
         element: new Set<Element>(),
         callback,
@@ -49,9 +50,10 @@ const renderElement = ({
     opts?: Partial<ContainerQueryProps>;
     width?: string;
 } = {}) => {
-    const { result, rerender } = renderHook(() =>
+    const { result, rerender, unmount } = renderHook(() =>
         useContainerQueries({ breakpoints, ignoreDimensions })
     );
+
     const utils = render(
         <div data-testid='wrapper' ref={mount ? result.current.ref : null} style={{ width }}>
             {result.current.current.toString()}
@@ -62,6 +64,7 @@ const renderElement = ({
         utils,
         result,
         rerender,
+        unmount,
     };
 };
 
@@ -72,15 +75,72 @@ describe('use-container-queries', () => {
 
         expect(() => getMockedInstance(element)).toThrowError();
     });
-    it('should create an instance if the ref is attached via the callback ref', async () => {
+    it('should create an instance if the ref is attached via the callback ref', () => {
         const { utils } = renderElement();
         const element = utils.getByTestId('wrapper');
         const instance = getMockedInstance(element);
-        // await waitForNextUpdate();
+
         expect(instance.observe).toHaveBeenCalledWith(element);
     });
-    // it('returns the initial width and matching breakpoint on the reported element once it has mounted', async () => {
-    //     const { result } = renderElement();
-    //     console.log(result.current);
-    // });
+    it('returns the matching breakpoint from the latest reported size on the observed element', () => {
+        const { utils, result } = renderElement();
+        const element = utils.getByTestId('wrapper');
+
+        act(() => {
+            triggerObserverCallback({
+                target: element,
+                borderBoxSize: { inlineSize: 400, blockSize: 200 },
+            });
+        });
+
+        // 400px falls in the med breakpoint
+        expect(result.current.current).toEqual('med');
+    });
+    it('returns the matching breakpoint from the latest reported size when the size changes multiple times on the observed element', () => {
+        const { utils, result } = renderElement();
+        const element = utils.getByTestId('wrapper');
+
+        act(() => {
+            triggerObserverCallback({
+                target: element,
+                borderBoxSize: { inlineSize: 400, blockSize: 200 },
+            });
+        });
+
+        expect(result.current.current).toEqual('med');
+
+        act(() => {
+            triggerObserverCallback({
+                target: element,
+                borderBoxSize: { inlineSize: 700, blockSize: 200 },
+            });
+        });
+
+        expect(result.current.current).toEqual('large');
+    });
+    it('reports the correct width on the observed element when observing dimension changes', () => {
+        const { utils, result } = renderElement({ opts: { ignoreDimensions: false } });
+        const element = utils.getByTestId('wrapper');
+
+        act(() => {
+            triggerObserverCallback({
+                target: element,
+                borderBoxSize: { inlineSize: 250, blockSize: 200 },
+            });
+        });
+
+        expect(result.current.current).toEqual('small');
+        expect(result.current.width).toEqual(250);
+    });
+    it('disconnects the observer instance when the element is unmounted from the DOM', () => {
+        const { utils, unmount } = renderElement();
+        const element = utils.getByTestId('wrapper');
+        const instance = getMockedInstance(element);
+
+        expect(instance.disconnect).toBeCalledTimes(0);
+
+        unmount();
+
+        expect(instance.disconnect).toBeCalledTimes(1);
+    });
 });

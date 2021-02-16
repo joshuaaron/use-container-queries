@@ -9,7 +9,7 @@ export interface MockedResizeObserverCallback {
 
 interface MockedResizeObserverEntry {
     readonly target: Element;
-    readonly contentRect: DOMRectReadOnly;
+    readonly contentRect?: DOMRectReadOnly;
     readonly borderBoxSize: ResizeObserverSize[] | ResizeObserverSize;
 }
 
