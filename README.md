@@ -1,12 +1,6 @@
 # use-container-queries
 
-> "Container queries allow an author to control styling based on the size of a containing element rather than the size of the user’s viewport."
-> [Editors Draft - WICG](https://wicg.github.io/container-queries/)
-
-
-🚨 **Important**:
-This hook uses the [Resize Observer](https://developer.mozilla.org/en-US/docs/Web/API/ResizeObserver) internally to measure the changes of size on your element. Browser support for the API is relatively wide and can be viewed [here](https://caniuse.com/resizeobserver). For now, this library does not ship with a polyfill (open to changing this) but you can include one in your project from [here](https://www.npmjs.com/package/resize-observer-polyfill)
-
+A react hook that tracks a containers size and the range that width falls into within a list of breakpoints. This allows better responsive styling, where the user can style DOM elements based on their container, rather than the browser viewport.
 
 ## Install
 
@@ -17,6 +11,10 @@ npm install use-container-queries --save-dev
 # or
 yarn add use-container-queries --dev
 ```
+
+🚨 **Important**:
+This hook uses the [Resize Observer](https://developer.mozilla.org/en-US/docs/Web/API/ResizeObserver) internally to measure the changes of size on your element. Browser support for the API is relatively wide and can be viewed [here](https://caniuse.com/resizeobserver). For now, this library does not ship with a polyfill (open to changing this) but you can include one in your project from [here](https://www.npmjs.com/package/resize-observer-polyfill)
+
 
 ## Quick Start
 
@@ -47,6 +45,9 @@ function App() {
 
 ### Background
 
+> "Container queries allow an author to control styling based on the size of a containing element rather than the size of the user’s viewport."
+> [Editors Draft - WICG](https://wicg.github.io/container-queries/)
+
 We've been using Media Queries to handle responsive web design for years, but as we've started to adopt a more modular and component based design system, the shortcomings of this approach become obvious. A component may behave and look differently depending on where it is placed within your layout. Components should be responsive and independent of purely just the viewport size.
 
 Container Queries aim to solve this by allowing you to observe the container's width to allow you to adjust your styles accordingly.
@@ -62,10 +63,7 @@ const breakpoints = {
     large: [601]
 };
 ```
-
-Note: For your largest breakpoint, you can omit the 'max' value as it is implied this breakpoint is from the minimum value and above.
-
-If the containers current width is 430px, the hook would return `{ current: 'med', width: 430 }`.
+If the containers current width is 430px, the hook would return `{ current: 'med', width: 430 }`. For your largest breakpoint, you can omit the 'max' value as it is implied this breakpoint is from the minimum value and above.
 
 ### API
 
