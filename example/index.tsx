@@ -11,14 +11,14 @@ const breakpoints: QueryBreakpoints = {
 };
 
 const App = () => {
-    const { current, ref, width } = useContainerQueries({
+    const { active, ref, width } = useContainerQueries({
         breakpoints,
     });
-    const [bg, setBg] = React.useState(current);
+    const [bg, setBg] = React.useState(active);
 
     React.useEffect(() => {
-        setBg(current);
-    }, [current]);
+        setBg(active);
+    }, [active]);
 
     let background: string;
     switch (bg) {
@@ -51,7 +51,7 @@ const App = () => {
             >
                 <div>Resize me!</div>
                 <br />
-                <div>Current breakpoint: {current}</div>
+                <div>Current breakpoint: {active}</div>
                 <div>Container width: {width}</div>
             </div>
             <div style={{ margin: '10px 0', fontFamily: 'monospace' }}>
