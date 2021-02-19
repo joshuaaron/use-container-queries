@@ -56,7 +56,7 @@ const renderElement = ({
 
     const utils = render(
         <div data-testid='wrapper' ref={mount ? result.current.ref : null} style={{ width }}>
-            {result.current.current.toString()}
+            {result.current.active.toString()}
         </div>
     );
 
@@ -94,7 +94,7 @@ describe('use-container-queries', () => {
         });
 
         // 400px falls in the med breakpoint
-        expect(result.current.current).toEqual('med');
+        expect(result.current.active).toEqual('med');
     });
     it('returns the matching breakpoint from the latest reported size when the size changes multiple times on the observed element', () => {
         const { utils, result } = renderElement();
@@ -107,7 +107,7 @@ describe('use-container-queries', () => {
             });
         });
 
-        expect(result.current.current).toEqual('med');
+        expect(result.current.active).toEqual('med');
 
         act(() => {
             triggerObserverCallback({
@@ -116,7 +116,7 @@ describe('use-container-queries', () => {
             });
         });
 
-        expect(result.current.current).toEqual('large');
+        expect(result.current.active).toEqual('large');
     });
     it('reports the correct width on the observed element when observing dimension changes', () => {
         const { utils, result } = renderElement({ opts: { ignoreDimensions: false } });
@@ -129,7 +129,7 @@ describe('use-container-queries', () => {
             });
         });
 
-        expect(result.current.current).toEqual('small');
+        expect(result.current.active).toEqual('small');
         expect(result.current.width).toEqual(250);
     });
     it('disconnects the observer instance when the element is unmounted from the DOM', () => {

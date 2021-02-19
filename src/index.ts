@@ -16,14 +16,14 @@ export type ContainerQueryProps = {
 export type ContainerQueryResult<T> = {
     /** Callback ref to be assigned to the containing DOM node the user wishes to observe for changes. */
     ref: RefCallback<T>;
-    /** The current 'active' breakpoint. This key will match from one of the key/value pairs from the breakpoints supplied to the hook */
-    current: string;
+    /** The current 'active' breakpoint. This key will match one of the key/value pairs from the breakpoints supplied to the hook */
+    active: string;
     /** Current width of the observed element */
     width: number;
 };
 
 type ContainerQueryState = {
-    currentBreakpoint: string;
+    activeBreakpoint: string;
     width: number;
 };
 
@@ -42,11 +42,11 @@ type ContainerQueryState = {
  */
 export function useContainerQueries<T extends HTMLElement>({
     breakpoints,
-    ignoreDimensions = false,
+    ignoreDimensions = true,
 }: ContainerQueryProps): ContainerQueryResult<T> {
     const initialBreakpoint = Object.keys(breakpoints)[0];
     const [state, setState] = useState<ContainerQueryState>({
-        currentBreakpoint: initialBreakpoint,
+        activeBreakpoint: initialBreakpoint,
         width: 0,
     });
 
@@ -70,7 +70,7 @@ export function useContainerQueries<T extends HTMLElement>({
             }
 
             return {
-                currentBreakpoint: currentActive || prevActive,
+                activeBreakpoint: currentActive || prevActive,
                 width,
             };
         },
@@ -95,16 +95,16 @@ export function useContainerQueries<T extends HTMLElement>({
             }
 
             if (ignoreDimensions) {
-                const { currentBreakpoint } = matchBreakpoint(state.currentBreakpoint, width);
+                const { activeBreakpoint } = matchBreakpoint(state.activeBreakpoint, width);
 
-                if (currentBreakpoint !== state.currentBreakpoint) {
-                    setState((prev) => ({ ...prev, currentBreakpoint }));
+                if (activeBreakpoint !== state.activeBreakpoint) {
+                    setState((prev) => ({ ...prev, activeBreakpoint }));
                 }
             } else {
-                setState(matchBreakpoint(state.currentBreakpoint, width));
+                setState(matchBreakpoint(state.activeBreakpoint, width));
             }
         },
-        [state.currentBreakpoint, ignoreDimensions, matchBreakpoint]
+        [state.activeBreakpoint, ignoreDimensions, matchBreakpoint]
     );
 
     useIsomorphicLayoutEffect(() => {
@@ -140,6 +140,6 @@ export function useContainerQueries<T extends HTMLElement>({
     return {
         ref: assignRef,
         width: state.width,
-        current: state.currentBreakpoint,
+        active: state.activeBreakpoint,
     } as const;
 }
