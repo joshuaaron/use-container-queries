@@ -1,8 +1,8 @@
 # use-container-queries
 
-A react hook that tracks a containers size and the range that width falls into within a list of breakpoints. This allows better responsive styling, where the user can style DOM elements based on their container, rather than the browser viewport.
+A react hook that tracks a containers size and reports what range that width falls into within a list of breakpoints. This allows better responsive styling, where the user can style DOM elements based on their container, rather than the browser viewport.
 
-Try it a demo [here](https://codesandbox.io/s/usecontainerqueries-s1l0k)
+Try out a demo [here](https://codesandbox.io/s/usecontainerqueries-s1l0k)
 
 ## Install
 
@@ -91,3 +91,5 @@ function useContainerQueries<T extends HTMLElement>(
 | active | `string`         | The current active breakpoint. This key will match a property from the breakpoints supplied to the hook by the user. |
 
 ### Examples
+
+Coming soon
