@@ -31,7 +31,7 @@ const breakpoints = {
 };
 
 function App() {
-    const { ref, active, width } = useElementInView({ breakpoints });
+    const { ref, active, width } = useContainerQueries({ breakpoints });
 
     return (
         <div ref={ref}>
